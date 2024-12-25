@@ -217,15 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     conversationOutput.scrollTop = conversationOutput.scrollHeight;
     // Request microphone access
-    navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-    console.log('Microphone access granted');
-    // Do something with the microphone stream (e.g., show recording UI)
-    })
-    .catch(function(error) {
-    console.log('Error accessing microphone: ', error);
-    alert('Microphone access denied or not available');
-    });
 });
 
 
