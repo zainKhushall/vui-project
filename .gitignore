@@ -1,0 +1,10 @@
+# Python bytecode files
+__pycache__/
+
+# Virtual environment directories
+venv/
+env/
+# .env file for environment variables (sensitive information)
+.env
+
+flask_session
