@@ -1,8 +1,15 @@
 from flask import Flask, request, jsonify,render_template,session
 from chat_gpt_handler import ChatGPTHandle
+from dotenv import load_dotenv
+import os
+
+load_dotenv('.env')
+
 
 app = Flask(__name__)
-chat_gpt = ChatGPTHandle()
+gpt_key = os.getenv('GPT_KEY')
+
+chat_gpt = ChatGPTHandle(api_key=gpt_key)
 
 # Initial messages for the assistant
 messages = [

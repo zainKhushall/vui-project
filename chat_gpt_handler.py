@@ -1,9 +1,8 @@
-api_key = "sk-proj-DSZfHRrRS7Ltl8ltaqm3T3BlbkFJLa545ew9czx9oOkhpE4n"
 from openai import OpenAI
-import os
+
 
 class ChatGPTHandle:
-    def __init__(self):
+    def __init__(self, api_key):
         if not api_key:
             raise ValueError("OPENAI_API_KEY is not set in the environment.")
         self.client = OpenAI(api_key=api_key)
