@@ -144,7 +144,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const data = await response.json();
-            if (data.reply) {
+            if (data.write !="-1")
+            {
+                conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.write}</p>`;
+                statusOutput.textContent = "Status: Reply received";
+
+                // Speak the assistant's response
+                utterance = new SpeechSynthesisUtterance(data.reply);
+                utterance.lang = "en-US";
+                synth.speak(utterance);
+            }
+            else if (data.reply) {
                 conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.reply}</p>`;
                 statusOutput.textContent = "Status: Reply received";
 
