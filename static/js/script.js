@@ -89,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const micButton = document.getElementById("mic-button");
     const sendButton = document.getElementById("send-button");
     const conversationOutput = document.getElementById("conversation-output");
+    const conversationFrame = document.getElementById("conversational-frame");
     const statusOutput = document.getElementById("status-output");
     const voiceActions = document.getElementById("voice-actions");
     const voiceCancelButton = document.getElementById("voice-cancel-button");
@@ -132,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Send Message to ChatGPT
     async function sendMessage(message) {
         conversationOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+        scrollToBottom();
         statusOutput.textContent = "Status: Sending message...";
 
         try {
@@ -147,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.write !="-1")
             {
                 conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.write}</p>`;
+                scrollToBottom();
                 statusOutput.textContent = "Status: Reply received";
 
                 // Speak the assistant's response
@@ -157,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (data.reply) {
                 conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.reply}</p>`;
                 statusOutput.textContent = "Status: Reply received";
-
+                scrollToBottom();
                 // Speak the assistant's response
                 utterance = new SpeechSynthesisUtterance(data.reply);
                 utterance.lang = "en-US";
@@ -165,11 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 conversationOutput.innerHTML += `<p><strong>Error:</strong> Failed to get a response.</p>`;
                 statusOutput.textContent = "Status: Error occurred";
+                scrollToBottom();
             }
         } catch (error) {
             console.error("Error:", error);
             conversationOutput.innerHTML += `<p><strong>Error:</strong> Unable to connect to the server.</p>`;
             statusOutput.textContent = "Status: Network Error";
+            scrollToBottom();
         }
     }
 
@@ -225,7 +230,24 @@ document.addEventListener("DOMContentLoaded", () => {
         micButton.style.display = "inline";
         voiceActions.style.display = "none";
     });
-    conversationOutput.scrollTop = conversationOutput.scrollHeight;
+
+    // Trigger sendMessage(voiceInput) with Enter key during voice input
+    document.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && voiceActions.style.display === "flex") {
+            e.preventDefault();
+            if (voiceInput) {
+                sendMessage(voiceInput);
+                voiceInput = "";
+                micButton.style.display = "inline";
+                voiceActions.style.display = "none";
+            }
+        }
+    });
+
+    function scrollToBottom() {
+        console.log("Scrolling to bottom...");
+        conversationFrame.scrollTop = conversationFrame.scrollHeight;
+    }
     // Request microphone access
 });
 
