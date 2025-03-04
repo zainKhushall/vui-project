@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stopSpeakingButton = document.getElementById("stop-speaking");
 
     let synth = window.speechSynthesis; // Speech synthesis instance
+    let audio = null;
     let utterance; // Current speech utterance
     let recognition; // Speech recognition instance (if supported)
     let voiceInput = ""; // Stores recognized voice input
@@ -132,39 +133,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Send Message to ChatGPT
     async function sendMessage(message) {
+        const filename = document.getElementById("filename").value;  // Get filename from hidden input
         conversationOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
         scrollToBottom();
         statusOutput.textContent = "Status: Sending message...";
-
+    
         try {
-            const response = await fetch("/chat", {
+            const response = await fetch(`/chat?filename=${filename}`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message }),
             });
-
+    
             const data = await response.json();
-            if (data.write !="-1")
-            {
-                conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.write}</p>`;
-                scrollToBottom();
-                statusOutput.textContent = "Status: Reply received";
-
-                // Speak the assistant's response
-                utterance = new SpeechSynthesisUtterance(data.reply);
-                utterance.lang = "en-US";
-                synth.speak(utterance);
-            }
-            else if (data.reply) {
+            if (data.reply) {
                 conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.reply}</p>`;
                 statusOutput.textContent = "Status: Reply received";
                 scrollToBottom();
-                // Speak the assistant's response
-                utterance = new SpeechSynthesisUtterance(data.reply);
-                utterance.lang = "en-US";
-                synth.speak(utterance);
+                playPollyAudio(data.reply);
             } else {
                 conversationOutput.innerHTML += `<p><strong>Error:</strong> Failed to get a response.</p>`;
                 statusOutput.textContent = "Status: Error occurred";
@@ -179,9 +165,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Stop Speaking Button
+    // stopSpeakingButton.addEventListener("click", () => {
+    //     if (synth.speaking) {
+    //         synth.cancel(); // Stop current speech
+    //         statusOutput.textContent = "Status: Speech stopped";
+    //     }
+    // });
+
     stopSpeakingButton.addEventListener("click", () => {
-        if (synth.speaking) {
-            synth.cancel(); // Stop current speech
+        if (audio) {
+            audio.pause();  // Stop playback
+            audio.currentTime = 0;  // Reset to start
             statusOutput.textContent = "Status: Speech stopped";
         }
     });
@@ -247,6 +241,30 @@ document.addEventListener("DOMContentLoaded", () => {
     function scrollToBottom() {
         console.log("Scrolling to bottom...");
         conversationFrame.scrollTop = conversationFrame.scrollHeight;
+    }
+
+    function playPollyAudio(text) {
+        fetch("/synthesize", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            if (audio) {
+                audio.pause(); // Stop any ongoing audio
+                audio.currentTime = 0; // Reset playback position
+            }
+    
+            const audioUrl = URL.createObjectURL(blob);
+            audio = new Audio(audioUrl);
+            audio.play();
+    
+            audio.onended = () => {
+                statusOutput.textContent = "Status: Speech finished";
+            };
+        })
+        .catch(error => console.error("Error:", error));
     }
     // Request microphone access
 });

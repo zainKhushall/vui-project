@@ -8,3 +8,5 @@ env/
 .env
 
 flask_session
+user_data
+*.mp3
