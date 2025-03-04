@@ -8,6 +8,7 @@ from weather_handler import Weather_Handler
 from google_search_handler import google_custom_search
 from schedule_handler import add_event, get_schedule, get_current_datetime ,remove_event
 import uuid
+import traceback
 
 load_dotenv('.env')
 
@@ -76,81 +77,86 @@ def start_chat():
 @app.route('/chat', methods=['POST'])
 def chat():
     """ Process user message and store chat in a file instead of session """
-    
+    try:
     # Get filename from request
-    filename = request.args.get("filename", "").strip()
-    if not filename:
-        return jsonify({"error": "Filename is required"}), 400
+        filename = request.args.get("filename", "").strip()
+        if not filename:
+            return jsonify({"error": "Filename is required"}), 400
 
-    filepath = os.path.join(DATA_DIR, filename)
+        filepath = os.path.join(DATA_DIR, filename)
 
-    user_message = request.json.get("message", "").strip()
-    if not user_message:
-        return jsonify({"error": "Message cannot be empty"}), 400
+        user_message = request.json.get("message", "").strip()
+        if not user_message:
+            return jsonify({"error": "Message cannot be empty"}), 400
 
-    # Store user message in file
-    with open(filepath, "a") as f:
-        f.write(f"User: {user_message}\n")
-
-    # Prepare chat history for ChatGPT
-    chat_history = [{"role": "system", "content": "You are a helpful assistant."}]
-    
-    # Read existing messages from file (excluding headers)
-    if os.path.exists(filepath):
-        with open(filepath, "r") as f:
-            lines = f.readlines()
-            for line in lines[3:]:  # Skip headers
-                if line.startswith("User: "):
-                    chat_history.append({"role": "user", "content": line.replace("User: ", "").strip()})
-                elif line.startswith("Assistant: "):
-                    chat_history.append({"role": "assistant", "content": line.replace("Assistant: ", "").strip()})
-
-    # Get response from ChatGPT
-    response = chat_gpt.get_chatgpt_response(chat_history)
-
-    if response:
-        while True:
-            choice = response.choices[0]
-            finish_reason = choice.finish_reason
-
-            if finish_reason == "function_call":
-                fn_name = choice.message.function_call.name
-                args = json.loads(choice.message.function_call.arguments)
-
-                # Call the appropriate function
-                fn = functions.get(fn_name)
-                if fn:
-                    if fn_name == "googleCustomSearch":
-                        result = fn(args['query'])
-                    elif fn_name == "weatherCheck":
-                        city = args.get("city", "Islamabad")  # Default city
-                        result = fn(city)
-                    elif fn_name == "addEvent":
-                        result = fn(args['event_name'], args['event_date'], args['event_time'])
-                    elif fn_name == "getSchedule":
-                        result = fn()
-                    elif fn_name == 'getCurrentDateTime':
-                        result = fn()
-                    elif fn_name == "removeEvent":
-                        result = fn(args['event_name'], args['event_date'], args['event_time'])
-
-                    chat_history.append({
-                        "role": "function",
-                        "name": fn_name,
-                        "content": json.dumps({"result": result}),
-                    })
-                    response = chat_gpt.get_chatgpt_response(chat_history)
-            else:
-                assistant_response = choice.message.content
-                break
-
-        # Store assistant response in file
+        # Store user message in file
         with open(filepath, "a") as f:
-            f.write(f"Assistant: {assistant_response}\n")
+            f.write(f"User: {user_message}\n")
 
-        return jsonify({"reply": assistant_response})
-    else:
-        return jsonify({"error": "Failed to fetch response from ChatGPT"}), 500
+        # Prepare chat history for ChatGPT
+        chat_history = [{"role": "system", "content": "You are a helpful assistant."}]
+        
+        # Read existing messages from file (excluding headers)
+        if os.path.exists(filepath):
+            with open(filepath, "r") as f:
+                lines = f.readlines()
+                for line in lines[3:]:  # Skip headers
+                    if line.startswith("User: "):
+                        chat_history.append({"role": "user", "content": line.replace("User: ", "").strip()})
+                    elif line.startswith("Assistant: "):
+                        chat_history.append({"role": "assistant", "content": line.replace("Assistant: ", "").strip()})
+
+        # Get response from ChatGPT
+        response = chat_gpt.get_chatgpt_response(chat_history)
+
+        if response:
+            while True:
+                choice = response.choices[0]
+                finish_reason = choice.finish_reason
+
+                if finish_reason == "function_call":
+                    fn_name = choice.message.function_call.name
+                    args = json.loads(choice.message.function_call.arguments)
+
+                    # Call the appropriate function
+                    fn = functions.get(fn_name)
+                    if fn:
+                        if fn_name == "googleCustomSearch":
+                            result = fn(args['query'])
+                        elif fn_name == "weatherCheck":
+                            city = args.get("city", "Islamabad")  # Default city
+                            result = fn(city)
+                        elif fn_name == "addEvent":
+                            result = fn(args['event_name'], args['event_date'], args['event_time'])
+                        elif fn_name == "getSchedule":
+                            result = fn()
+                        elif fn_name == 'getCurrentDateTime':
+                            result = fn()
+                        elif fn_name == "removeEvent":
+                            result = fn(args['event_name'], args['event_date'], args['event_time'])
+
+                        chat_history.append({
+                            "role": "function",
+                            "name": fn_name,
+                            "content": json.dumps({"result": result}),
+                        })
+                        response = chat_gpt.get_chatgpt_response(chat_history)
+                else:
+                    assistant_response = choice.message.content
+                    break
+
+            # Store assistant response in file
+            with open(filepath, "a") as f:
+                f.write(f"Assistant: {assistant_response}\n")
+
+            return jsonify({"reply": assistant_response})
+        else:
+            return jsonify({"error": "Failed to fetch response from ChatGPT"}), 500
+    except Exception as e:
+        print(f"Error message: {e}")
+        # Print the full traceback
+        print("Stack trace:")
+        traceback.print_exc()  # Prints the complete traceback to the console
 
 @app.route("/synthesize", methods=["POST"])
 def synthesize_speech():
