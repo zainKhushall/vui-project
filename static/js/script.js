@@ -269,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Request microphone access
 
     document.getElementById('end-chat-button').addEventListener('click', function() {
+        console.log("end conv clicked")
         const filename = document.getElementById('filename').value;
         if (filename) {
             window.location.href = `/questionnaire/${filename}`;
