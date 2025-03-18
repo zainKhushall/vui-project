@@ -267,6 +267,15 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error("Error:", error));
     }
     // Request microphone access
+
+    document.getElementById('end-chat-button').addEventListener('click', function() {
+        const filename = document.getElementById('filename').value;
+        if (filename) {
+            window.location.href = `/questionnaire/${filename}`;
+        } else {
+            alert("Filename not found. Cannot proceed to questionnaire.");
+        }
+    });
 });
 
 

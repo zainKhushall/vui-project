@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thank You</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+
+        .thank-you-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .thank-you-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .thank-you-container p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .button {
+            background-color: #ffffff;
+            color: #2575fc;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #e6e6e6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="thank-you-container">
+        <h1>🎉 Thank You!</h1>
+        <p>Your feedback has been successfully submitted.<br>
+        We appreciate your time and input for this study.</p>
+        <a href="/" class="button">Return to Home</a>
+    </div>
+</body>
+</html>

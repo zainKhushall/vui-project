@@ -56,21 +56,7 @@ class ChatGPTHandle:
                 "name": "getCurrentDateTime",
                 "description": "Returns the current date and time.",
                 "parameters": {"type": "object", "properties": {}}
-            },
-            {
-                "name": "getPlainText",
-                "description": "Automatically process text containing URLs or numbers into plain text for speech synthesis. Call this function whenever such text appears.Converts text containing URLs or large numerical values into plain text by removing URLs and converting numbers to words, making it suitable for speech synthesis.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "text": {
-                            "type": "string",
-                            "description": "The input text that needs to be cleaned and formatted."
-                        }
-                    },
-                    "required": ["text"]
-                }
-            },
+            }
         ]
 
     def get_chatgpt_response(self, messages,f_schema=None):

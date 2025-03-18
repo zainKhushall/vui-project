@@ -8,6 +8,7 @@ from weather_handler import Weather_Handler
 from google_search_handler import google_custom_search
 from schedule_handler import add_event, get_schedule, get_current_datetime ,remove_event
 import uuid
+import datetime
 import traceback
 
 load_dotenv('.env')
@@ -33,14 +34,14 @@ messages = [
     }
 ]
 
-functions = {
-    "googleCustomSearch": google_custom_search,
-    "weatherCheck": lambda city: Weather_Handler().get_weather(city,weather_api_key),
-    "addEvent": add_event,
-    "getSchedule": get_schedule,
-    "getCurrentDateTime": get_current_datetime,
-    "removeEvent": remove_event,
-}
+# functions = {
+#     "googleCustomSearch": google_custom_search,
+#     "weatherCheck": lambda city: Weather_Handler().get_weather(city,weather_api_key),
+#     "addEvent": add_event,
+#     "getSchedule": get_schedule,
+#     "getCurrentDateTime": get_current_datetime,
+#     "removeEvent": remove_event,
+# }
 
 
 app.config["SESSION_TYPE"] = "filesystem"
@@ -49,6 +50,11 @@ DATA_DIR = "user_data"  # Directory to store user files
 os.makedirs(DATA_DIR, exist_ok=True)  # Ensure directory exists
 
 @app.route('/')
+def introduction():
+    """ Show introduction and instructions page """
+    return render_template("intro.html")
+
+@app.route('/consent')
 def start():
     """ Show the user consent form. """
     return render_template("start.html")
@@ -64,7 +70,8 @@ def start_chat():
         return "Consent is required to proceed.", 400
 
     user_id = str(uuid.uuid4())[:8]  # Short unique ID
-    filename = f"{name}-{occupation}_{user_id}.txt"
+    date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"{name}-{occupation}_{user_id}_{date_time}.txt"
     filepath = os.path.join(DATA_DIR, filename)
 
     # Create file and save user details
@@ -77,6 +84,16 @@ def start_chat():
 @app.route('/chat', methods=['POST'])
 def chat():
     """ Process user message and store chat in a file instead of session """
+
+    functions = {
+    "addEvent": lambda name, date, time: add_event(filepath, name, date, time),
+    "getSchedule": lambda: get_schedule(filepath),
+    "removeEvent": lambda name, date, time: remove_event(filepath, name, date, time),
+    "getCurrentDateTime": get_current_datetime,
+    "googleCustomSearch": google_custom_search,
+    "weatherCheck": lambda city: Weather_Handler().get_weather(city,weather_api_key)
+}
+    
     try:
     # Get filename from request
         filename = request.args.get("filename", "").strip()
@@ -171,6 +188,39 @@ def synthesize_speech():
         file.write(response["AudioStream"].read())
 
     return send_file(audio_file, mimetype="audio/mpeg")
+
+@app.route('/questionnaire/<filename>', methods=['GET', 'POST'])
+def questionnaire(filename):
+    questions = [
+        "The assistants answers were smart.",
+        "It could remember my last question to respond appropriately.",
+        "It understood the meaning of what I said.",
+        "Its responses were logical.",
+        "After completing my instruction, its response was relevant.",
+        "It could remember my preferences.",
+        "I found it easy to continue a conversation with the assistant."
+    ]
+
+    if request.method == 'POST':
+        ratings = [request.form.get(f"q{i}", "") for i in range(1, 8)]
+        feedback = request.form.get("feedback", "")
+        
+        response_filename = filename.replace('.txt', '_response.txt')
+        response_filepath = os.path.join(DATA_DIR, response_filename)
+
+        with open(response_filepath, "w") as f:
+            for i, rating in enumerate(ratings, start=1):
+                f.write(f"Q{i}: {rating}\n")
+            f.write("\nFeedback:\n")
+            f.write(feedback.strip())
+
+        return render_template('thank_you.html')
+
+    return render_template("questionnaire.html", filename=filename, questions=questions)
+
+@app.route('/thank-you')
+def thank_you():
+    return render_template('thank_you.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)

@@ -6,7 +6,170 @@
     <title>Assistant Interface</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Conversational Frame */
+        .frame {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        #conversational-frame {
+            height: 300px;
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: -10px;
+            gap: 10px;
+        }
+
+        #text-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #text-input:focus {
+            border-color: #007bff;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+        }
+
+        .button.blue { background-color: #2196F3; }
+        .button.yellow { background-color: #FFCC00; }
+        .button.green { background-color: #4CAF50; }
+        .button.red { background-color: #f44336; }
+
+        /* Voice Input Actions */
+        #voice-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        #voice-cancel-button,
+        #voice-send-button {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #voice-cancel-button { background-color: #f44336; }
+        #voice-send-button { background-color: #4CAF50; }
+
+        /* Buttons Section */
+        #buttons-frame {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #buttons-frame button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: 0.3s ease;
+        }
+
+        #buttons-frame button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: #f9f9f9;
+            border-top: 1px solid #ddd;
+            width: 100%;
+            padding: 10px 20px;
+            text-align: left;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            color: #333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            #conversational-frame {
+                height: 200px;
+            }
+
+            .input-area {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            #text-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #buttons-frame {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <input type="hidden" id="filename" value="{{ filename }}">
@@ -17,24 +180,17 @@
             <div id="conversation-output"></div>
         </div>
 
-
-
+        <!-- Input Area -->
         <div class="input-area">
             <input type="text" id="text-input" placeholder="Type your message here...">
-            <button id="send-button" class="button blue" title="Send">
-                Send
-            </button>
-            <button id="mic-button" class="button yellow" title="Start Listening">
-                🎤
-            </button>
+            <button id="send-button" class="button blue" title="Send">Send</button>
+            <button id="mic-button" class="button yellow" title="Start Listening">🎤</button>
         </div>
+
+        <!-- Voice Actions -->
         <div id="voice-actions" style="display: none;">
-            <button id="voice-cancel-button" class="button red" title="Cancel Voice Input">
-                ❌
-            </button>
-            <button id="voice-send-button" class="button green" title="Send Voice Input">
-                ✔️
-            </button>
+            <button id="voice-cancel-button" class="button red" title="Cancel Voice Input">❌</button>
+            <button id="voice-send-button" class="button green" title="Send Voice Input">✔️</button>
         </div>
 
         <!-- Buttons Section -->
@@ -42,6 +198,7 @@
             <button id="start-listening" class="button green">Start Listening</button>
             <button id="stop-speaking" class="button red">End Process</button>
             <button id="upload-file" class="button blue">Upload PDF</button>
+            <button id="end-chat-button" class="button yellow">End Chat & Give Feedback</button>
         </div>
     </div>
 
