@@ -1,147 +1,182 @@
-/* General Styles */
-body {
-    font-family: 'Segoe UI', sans-serif;
+* {
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom right, #E8F6FF, #FFFFFF);
-    color: #333;
+    box-sizing: border-box;
 }
 
-.container {
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #dff9fb, #f9f9f9);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: #333;
+}
+
+/* Header Logo */
+.header {
+    width: 100%;
     padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0077ff;
+    letter-spacing: 1px;
+}
+
+.logo i {
+    color: #ff4081;
+    margin-right: 8px;
+}
+
+/* Container */
+.container {
+    width: 95%;
+    max-width: 800px;
+    padding: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
-/* Frame Styles */
+/* Conversational Frame */
 .frame {
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    overflow-y: auto;
 }
 
 #conversational-frame {
-    height: 300px;
+    height: 350px;
+    max-height: 400px;
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+/* Chat Bubble Styles */
+#conversation-output > div {
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    max-width: 75%;
+    line-height: 1.4;
+}
+
+.user-message {
+    background-color: #0077ff;
+    color: #fff;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.bot-message {
+    background-color: #e0f2f1;
+    color: #333;
+    align-self: flex-start;
+    margin-right: auto;
 }
 
 /* Input Area */
 .input-area {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
     align-items: center;
-    width: 90%;
-    margin-top: -10px;
 }
 
 #text-input {
     flex: 1;
-    padding: 10px;
+    padding: 12px 14px;
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
+    border-radius: 12px;
     outline: none;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
 }
 
-#speak-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #FFCC00;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#speak-button:hover {
-    transform: scale(1.05);
-}
-
-/* Buttons Section */
-#buttons-frame {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+#text-input:focus {
+    border-color: #0077ff;
+    box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.2);
 }
 
 .button {
-    padding: 10px 20px;
-    font-size: 14px;
+    padding: 10px 16px;
+    font-size: 15px;
     font-weight: bold;
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: 0.3s ease-in-out;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, background-color 0.3s ease;
 }
-
-.button.green { background-color: #4CAF50; }
-.button.red { background-color: #f44336; }
-.button.blue { background-color: #2196F3; }
-.button.yellow { background-color: #FFCC00; }
 
 .button:hover {
     transform: scale(1.05);
 }
 
+.blue { background-color: #0077ff; }
+.yellow { background-color: #fbc531; color: #000; }
+.green { background-color: #44bd32; }
+.red { background-color: #e84118; }
+
+/* Voice Actions */
+#voice-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Buttons Frame */
+#buttons-frame {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#buttons-frame button {
+    flex: 1;
+    min-width: 30%;
+}
+
 /* Status Bar */
 .status-bar {
-    background: #f9f9f9;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(6px);
     border-top: 1px solid #ddd;
     width: 100%;
     padding: 10px 20px;
     text-align: left;
     font-size: 14px;
+    color: #555;
     position: fixed;
     bottom: 0;
-    left: 0;
 }
 
+/* Responsive */
+@media (max-width: 600px) {
+    .input-area {
+        flex-direction: column;
+    }
 
-#voice-actions {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 10px;
+    #buttons-frame {
+        flex-direction: column;
+    }
+
+    .logo {
+        font-size: 22px;
+    }
 }
-
-#voice-cancel-button,
-#voice-send-button {
-    padding: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#voice-cancel-button { background-color: #f44336; }
-#voice-send-button { background-color: #4CAF50; }
-
-
-#text-input {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
-    outline: none;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative; /* For positioning the send button inside */
-}
-
-
-/*vui-instance*/
-/*/c/Users/zaink/.ssh/id_rsa*/

@@ -89,7 +89,7 @@ def chat():
     "addEvent": lambda name, date, time: add_event(filepath, name, date, time),
     "getSchedule": lambda: get_schedule(filepath),
     "removeEvent": lambda name, date, time: remove_event(filepath, name, date, time),
-    "getCurrentDateTime": get_current_datetime,
+    "getCurrentDateTime": lambda location: get_current_datetime(location),
     "googleCustomSearch": google_custom_search,
     "weatherCheck": lambda city: Weather_Handler().get_weather(city,weather_api_key)
 }
@@ -148,7 +148,8 @@ def chat():
                         elif fn_name == "getSchedule":
                             result = fn()
                         elif fn_name == 'getCurrentDateTime':
-                            result = fn()
+                            location = args.get("location", "Karachi")  # Default to UTC if no location provided
+                            result = fn(location)
                         elif fn_name == "removeEvent":
                             result = fn(args['event_name'], args['event_date'], args['event_time'])
 

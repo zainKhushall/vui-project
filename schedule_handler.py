@@ -1,5 +1,8 @@
 import json
 import os
+import pytz
+from geopy.geocoders import Nominatim
+from timezonefinder import TimezoneFinder
 from datetime import datetime
 
 def get_schedule_file_path(conversation_filename):
@@ -76,7 +79,29 @@ def remove_event(conversation_filename, event_name, event_date, event_time):
     else:
         return f"No event named '{event_name}' found on {event_date} at {event_time}."
 
-def get_current_datetime():
-    """Returns the current date and time."""
-    now = datetime.now()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
+def get_current_datetime(location: str = "UTC"):
+    """
+    Returns the current date and time of the specified location.
+    If location is invalid or not provided, UTC is used as default.
+    """
+    try:
+        print("city:",location)
+        geolocator = Nominatim(user_agent="timezone_locator")
+        location_obj = geolocator.geocode(location)
+        
+        if location_obj:
+            tf = TimezoneFinder()
+            timezone_str = tf.timezone_at(lng=location_obj.longitude, lat=location_obj.latitude)
+            
+            if timezone_str:
+                tz = pytz.timezone(timezone_str)
+                utc_now = datetime.now(pytz.utc)
+                local_time = utc_now.astimezone(tz)
+                return local_time.strftime(f'%Y-%m-%d %H:%M:%S ({timezone_str})')
+            else:
+                return "Timezone not found for the given location."
+        else:
+            return "Location not found."
+    
+    except Exception as e:
+        return f"Error: {str(e)}"

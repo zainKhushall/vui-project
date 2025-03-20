@@ -56,6 +56,20 @@ class ChatGPTHandle:
                 "name": "getCurrentDateTime",
                 "description": "Returns the current date and time.",
                 "parameters": {"type": "object", "properties": {}}
+            },
+            {
+                "name": "getCurrentDateTime",
+                "description": "Returns the current date and time of the specified city or country.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "The name of the city or country to get the current time for, e.g., 'Tokyo', 'New York', 'Pakistan'. If no location is provided, default is Pakistan"
+                        }
+                    },
+                    "required": ["location"]
+                }
             }
         ]
 
