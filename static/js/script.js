@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         recognition.onstart = () => {
             statusOutput.textContent = "Status: Listening...";
+            document.getElementById("voice-spinner").style.display = "inline-block";
         };
 
         // recognition.onresult = (event) => {
@@ -123,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const transcript = event.results[0][0].transcript.trim();
             voiceInput = transcript;
             statusOutput.textContent = `Status: Recognized - "${voiceInput}"`;
-            
+            document.getElementById("voice-spinner").style.display = "none";
             // Enable send button only now
             voiceSendButton.disabled = false;
             recognition.stop();
