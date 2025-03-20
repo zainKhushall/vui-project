@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let utterance; // Current speech utterance
     let recognition; // Speech recognition instance (if supported)
     let voiceInput = ""; // Stores recognized voice input
+    let isRecognizing = false;
 
     // Check for browser support of Speech Recognition
     if ("webkitSpeechRecognition" in window) {
@@ -113,17 +114,30 @@ document.addEventListener("DOMContentLoaded", () => {
             statusOutput.textContent = "Status: Listening...";
         };
 
+        // recognition.onresult = (event) => {
+        //     const transcript = event.results[0][0].transcript.trim();
+        //     voiceInput = transcript;
+        //     statusOutput.textContent = `Status: Recognized - "${voiceInput}"`;
+        // };
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript.trim();
             voiceInput = transcript;
             statusOutput.textContent = `Status: Recognized - "${voiceInput}"`;
+            
+            // Enable send button only now
+            voiceSendButton.disabled = false;
+            recognition.stop();
         };
 
         recognition.onerror = (event) => {
             statusOutput.textContent = "Status: Error in recognition";
         };
 
+        // recognition.onend = () => {
+        //     statusOutput.textContent = "Status: Listening ended";
+        // };
         recognition.onend = () => {
+            isRecognizing = false;
             statusOutput.textContent = "Status: Listening ended";
         };
     } else {
