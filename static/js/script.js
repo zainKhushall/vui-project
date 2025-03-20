@@ -200,6 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start Listening with Mic
     micButton.addEventListener("click", () => {
         if (recognition) {
+            voiceInput = "";
             recognition.start();
             micButton.style.display = "none";
             voiceActions.style.display = "flex";
@@ -221,8 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
     voiceSendButton.addEventListener("click", () => {
         if (voiceInput) {
             sendMessage(voiceInput);
-            voiceInput = ""; // Clear after sending
         }
+        voiceInput = ""; // Clear after sending
         micButton.style.display = "inline";
         voiceActions.style.display = "none";
         sendButton.style.display = "flex";
