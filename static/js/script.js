@@ -213,9 +213,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start Listening with Mic
     micButton.addEventListener("click", () => {
-        if (recognition) {
+        if (recognition && !isRecognizing) {
             voiceInput = "";
             recognition.start();
+            voiceSendButton.disabled = true;
             micButton.style.display = "none";
             voiceActions.style.display = "flex";
             sendButton.style.display = "none";
