@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             recognition.start();
             micButton.style.display = "none";
             voiceActions.style.display = "flex";
+            sendButton.style.display = "none";
         }
     });
 
@@ -213,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         voiceActions.style.display = "none";
         statusOutput.textContent = "Status: Voice input cancelled";
         voiceInput = ""; // Clear voice input
+        sendButton.style.display = "flex";
     });
 
     // Send Voice Input
@@ -223,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         micButton.style.display = "inline";
         voiceActions.style.display = "none";
+        sendButton.style.display = "flex";
     });
 
     // Trigger sendMessage(voiceInput) with Enter key during voice input
