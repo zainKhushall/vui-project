@@ -112,7 +112,11 @@ def chat():
             f.write(f"User: {user_message}\n")
 
         # Prepare chat history for ChatGPT
-        chat_history = [{"role": "system", "content": "You are a helpful assistant."}]
+        start_message = {
+            "role": "system", 
+            "content": "You are a helpful Virtual Assistant. You have been integrated with a speech system, so now you can listen and speak."
+        }
+        chat_history = [start_message]
         
         # Read existing messages from file (excluding headers)
         if os.path.exists(filepath):
