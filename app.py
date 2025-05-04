@@ -1,3 +1,4 @@
+import io
 from flask import Flask, request, jsonify,render_template,send_file
 from chat_gpt_handler import ChatGPTHandle
 from dotenv import load_dotenv
@@ -183,12 +184,14 @@ def synthesize_speech():
 
     response = polly.synthesize_speech(Text=text, OutputFormat="mp3", VoiceId="Joanna")
 
-    # Save the audio file
-    audio_file = "output.mp3"
-    with open(audio_file, "wb") as file:
-        file.write(response["AudioStream"].read())
+    audio_stream = response["AudioStream"].read()
 
-    return send_file(audio_file, mimetype="audio/mpeg")
+    return send_file(
+        io.BytesIO(audio_stream),
+        mimetype="audio/mpeg",
+        as_attachment=False,
+        download_name="speech.mp3"
+    )
 
 @app.route('/questionnaire/<filename>', methods=['GET', 'POST'])
 def questionnaire(filename):
