@@ -79,7 +79,7 @@ class ChatGPTHandle:
                 f_schema = None
             else:
                 f_schema=self.functions_schema
-            print("message:",messages)
+            print("message send to chat gpt:")
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
