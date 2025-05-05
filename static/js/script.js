@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 conversationOutput.innerHTML += `<p><strong>Assistant:</strong> ${data.reply}</p>`;
                 statusOutput.textContent = "Status: Reply received";
                 scrollToBottom();
-                playPollyAudio(data.reply);
+                playPollyAudio(data.to_speak);
             } else {
                 conversationOutput.innerHTML += `<p><strong>Error:</strong> Failed to get a response.</p>`;
                 statusOutput.textContent = "Status: Error occurred";

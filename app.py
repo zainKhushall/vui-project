@@ -31,7 +31,7 @@ chat_gpt = ChatGPTHandle(api_key=gpt_key, weather_api_key=weather_api_key)
 messages = [
     {
         "role": "system", 
-        "content": "You are a helpful Virtual Assistant. You have been integrated with a speech system, so now you can listen and speak. keep eye on function calling"
+        "content": "You are a helpful Virtual Assistant. You have been integrated with a speech system, so now you can listen and speak. Provide response in this structure:'to_speak':'text that will be given to speech system to speack, avoide urls and mathematical numbers that are are not suitable for reading. you can subtitute with equalivalent english/language word if required ', 'to_display':'text that have to be disply on screen, it can include urls and even mathematical numbers'. There is another important thing that you have to keep eye on previous querires and responses so you can preserve the context and refer back to it if required."
     }
 ]
 
@@ -65,6 +65,7 @@ def start_chat():
     """ Store user details and create a file for storing interactions. """
     name = request.form.get("name", "").replace(" ", "")
     occupation = request.form.get("occupation", "").replace(" ", "")
+    email = request.form.get("email", "")
     consent = request.form.get("consent")
 
     if not (name and occupation and consent):
@@ -77,7 +78,7 @@ def start_chat():
 
     # Create file and save user details
     with open(filepath, "w") as f:
-        f.write(f"User: {name}\nOccupation: {occupation}\n--- Conversations ---\n")
+        f.write(f"User: {name}\nOccupation: {occupation}\nEmail: {email}\n--- Conversations ---\n")
 
     # Pass filename to index.html
     return render_template('index.html', filename=filename)
@@ -113,8 +114,18 @@ def chat():
 
         # Prepare chat history for ChatGPT
         start_message = {
-            "role": "system", 
-            "content": "You are a helpful Virtual Assistant. You have been integrated with a speech system, so now you can listen and speak."
+            "role": "system",
+            "content": (
+                "You are a helpful virtual assistant integrated with a speech system, so you can now listen and speak. "
+                "Always respond using this structure in proper JSON format (double quotes, not single quotes):\n\n"
+                "{\n"
+                '  "to_speak": "Text to be spoken by the speech system. Avoid using URLs and mathematical expressions not suitable for reading aloud. '
+                'You may substitute them with equivalent words in English or another appropriate language.",\n'
+                '  "to_display": "Text to be shown on the screen. This can include URLs, mathematical numbers, or any other detailed information."\n'
+                "}\n\n"
+                "After any function calls, your final response must follow this exact JSON structure so that it can be parsed programmatically. "
+                "Be sure to escape special characters if needed."
+            )
         }
         chat_history = [start_message]
         
@@ -122,7 +133,7 @@ def chat():
         if os.path.exists(filepath):
             with open(filepath, "r") as f:
                 lines = f.readlines()
-                for line in lines[3:]:  # Skip headers
+                for line in lines[4:]:  # Skip headers
                     if line.startswith("User: "):
                         chat_history.append({"role": "user", "content": line.replace("User: ", "").strip()})
                     elif line.startswith("Assistant: "):
@@ -166,13 +177,14 @@ def chat():
                         response = chat_gpt.get_chatgpt_response(chat_history)
                 else:
                     assistant_response = choice.message.content
+                    assistant_response = parse_chatgpt_response(assistant_response)
                     break
 
             # Store assistant response in file
             with open(filepath, "a") as f:
-                f.write(f"Assistant: {assistant_response}\n")
+                f.write(f"Assistant: {assistant_response.get('to_speak')}\n")
 
-            return jsonify({"reply": assistant_response})
+            return jsonify({"reply": assistant_response.get('to_display',''), "to_speak": assistant_response.get('to_speak','')})
         else:
             return jsonify({"error": "Failed to fetch response from ChatGPT"}), 500
     except Exception as e:
@@ -180,6 +192,14 @@ def chat():
         # Print the full traceback
         print("Stack trace:")
         traceback.print_exc()  # Prints the complete traceback to the console
+
+def parse_chatgpt_response(response_string):
+    try:
+        print("response_string:",response_string)
+        response_dict=json.loads(response_string)
+        return {'to_speak': response_dict['to_speak'], 'to_display':response_dict['to_display']}
+    except:
+        return {'to_speak': response_string, 'to_display': response_string}
 
 @app.route("/synthesize", methods=["POST"])
 def synthesize_speech():
