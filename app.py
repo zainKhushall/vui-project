@@ -195,7 +195,6 @@ def chat():
 
 def parse_chatgpt_response(response_string):
     try:
-        print("response_string:",response_string)
         response_dict=json.loads(response_string)
         return {'to_speak': response_dict['to_speak'], 'to_display':response_dict['to_display']}
     except:
