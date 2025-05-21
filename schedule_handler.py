@@ -85,7 +85,6 @@ def get_current_datetime(location: str = "UTC"):
     If location is invalid or not provided, UTC is used as default.
     """
     try:
-        print("city:",location)
         geolocator = Nominatim(user_agent="timezone_locator")
         location_obj = geolocator.geocode(location)
         
