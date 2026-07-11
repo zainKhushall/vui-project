@@ -1,0 +1,117 @@
+<!-- templates/start.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consent Form - AI Voice Assistant Study</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #f4f7fc;;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            text-align: center;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        label {
+            font-size: 16px;
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+        input[type="text"], input[type="checkbox"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #0077ff;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #035fc9;
+        }
+        .consent {
+            font-size: 14px;
+            color: #555;
+            margin-top: 15px;
+        }
+        .consent input {
+            width: auto;
+            margin-right: 10px;
+        }
+        .note {
+            font-size: 14px;
+            color: #888;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Welcome to the AI Voice Assistant Study</h2>
+        <p>This study evaluates the integration of ChatGPT with voice user interfaces.</p>
+        <p class="note"><strong>Note:</strong> Your interactions (text) will be stored for research purposes.</p>
+
+        <form action="/start_chat" method="post">
+            <div>
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div>
+                <label for="Email">Your Email:</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+
+            <div>
+                <label for="occupation">Your Occupation:</label>
+                <input type="text" id="occupation" name="occupation" required>
+            </div>
+
+            <div class="consent">
+                <input type="checkbox" id="consent" name="consent" required>
+                <label for="consent">I agree that my interactions will be recorded for research purposes.</label>
+            </div>
+
+            <button type="submit">Start Chat</button>
+        </form>
+    </div>
+
+</body>
+</html>

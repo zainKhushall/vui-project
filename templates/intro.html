@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Introduction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            color: #555;
+        }
+
+        strong {
+            color: #007bff;
+        }
+
+        em {
+            font-style: italic;
+            color: #2c3e50;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            color: #34495e;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            color: #34495e;
+        }
+
+        ul {
+            padding-left: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        ul li {
+            margin-bottom: 1rem;
+        }
+
+        /* Button Styling */
+        .button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+            }
+
+            .button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Study on Context Preservation</h1>
+
+        <p>This study aims to evaluate the <strong>context preservation</strong> capabilities of the system.</p>
+
+        <p><em>Context Preservation</em> refers to the system's ability to remember the ongoing conversation context and refer back to previous queries or responses when needed.</p>
+
+        <h2>System Features:</h2>
+        <ul>
+            <li><strong>Speech Recognition</strong>: Convert your speech to text for processing.</li>
+            <li><strong>Text-to-Speech Output</strong>: Amazon Polly provides natural-sounding voice responses.</li>
+            <li><strong>Weather Updates</strong>: Get real-time weather info by providing a city name.</li>
+            <li><strong>Simple Web Search</strong>: The system can search the internet (accuracy not guaranteed).</li>
+            <li><strong>Standard Conversation</strong>: Engage in normal, everyday dialogue.</li>
+            <li><strong>Event Recorder</strong>: Schedule and store events like meetings with date and time.</li>
+        </ul>
+
+        <h3>Instructions:</h3>
+        <p>After interacting with the system, you will complete a short questionnaire and provide feedback regarding the system's context preservation abilities.</p>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ url_for('start') }}" class="button">Proceed to Consent Form</a>
+        </div>
+    </div>
+</body>
+</html>

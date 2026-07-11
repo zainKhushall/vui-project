@@ -1,49 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistant Interface</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>VUI World - Voice Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 <body>
-    <div class="container">
-        <!-- Conversational Area -->
-        <div class="frame" id="conversational-frame">
-            <div id="conversation-output"></div>
-        </div>
+    <input type="hidden" id="filename" value="{{ filename }}">
 
-
-
-        <div class="input-area">
-            <input type="text" id="text-input" placeholder="Type your message here...">
-            <button id="send-button" class="button blue" title="Send">
-                Send
-            </button>
-            <button id="mic-button" class="button yellow" title="Start Listening">
-                🎤
-            </button>
-        </div>
-        <div id="voice-actions" style="display: none;">
-            <button id="voice-cancel-button" class="button red" title="Cancel Voice Input">
-                ❌
-            </button>
-            <button id="voice-send-button" class="button green" title="Send Voice Input">
-                ✔️
-            </button>
-        </div>
-
-        <!-- Buttons Section -->
-        <div class="frame" id="buttons-frame">
-            <button id="start-listening" class="button green">Start Listening</button>
-            <button id="stop-speaking" class="button red">End Process</button>
-            <button id="upload-file" class="button blue">Upload PDF</button>
+    <!-- Logo/Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-microphone-alt"></i> VUI World
         </div>
     </div>
 
-    <!-- Status Area -->
+    <!-- Main Interface -->
+    <div class="container">
+        <!-- Chat Frame -->
+        <div class="frame" id="conversational-frame">
+            <div id="conversation-output">
+                <!-- Example Messages -->
+                <!-- <div class="user-message">Hi there!</div>
+                <div class="bot-message">Hello! How can I assist you today?</div> -->
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="text-input" placeholder="Type your message here...">
+            <button id="send-button" class="button blue" title="Send">Send</button>
+            <button id="mic-button" class="button yellow" title="Start Listening">🎤</button>
+        </div>
+
+        <!-- Voice Actions -->
+        <div id="voice-actions" style="display: none;">
+            <button id="voice-cancel-button" class="button red" title="Cancel Voice Input">❌ Cancel</button>
+            <button id="voice-send-button" class="button green" title="Send Voice Input">✔️ Send
+                <span class="spinner" id="voice-spinner" style="display: none;"></span>
+            </button>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="frame" id="buttons-frame">
+            <button id="stop-speaking" class="button red">Stop Speaking</button>
+            <button id="upload-file" class="button blue">Upload PDF</button>
+            <button id="end-chat-button" class="button yellow">End Chat & Feedback</button>
+        </div>
+    </div>
+
+    <!-- Status -->
     <div class="status-bar">
         <span id="status-output">Status: Idle</span>
     </div>
